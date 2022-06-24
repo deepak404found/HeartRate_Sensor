@@ -22,6 +22,10 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
 int BPM, SpO2;
 float TMP;
 
+//
+bool motorOn;
+int timer = 0;
+
 PulseOximeter pox;
 uint32_t tsLastReport = 0;
 
@@ -33,7 +37,7 @@ void setup() {
 
   // Turn on the blacklight and print a message.
   lcd.backlight();
-  lcd.print("Welcome to Newkilo Project!");
+  lcd.print("Smart O2 COMC.");
   delay(3000);
 //  oximeter steup
   Serial.begin(9600);
@@ -114,9 +118,16 @@ void loop() {
 
       //
       if(SpO2<=95 && SpO2 >=50){
+          timer=0;
+          motorOn = true;
           digitalWrite(in1, HIGH);
-        }      
+        }   
+      if(motorOn == true && timer <= 10){
+          timer++;
+        }   
       else{
+          timer=0;
+          motorOn=false;
           digitalWrite(in1, LOW);
         }
 
